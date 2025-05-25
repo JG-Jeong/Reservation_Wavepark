@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 # .env 파일 로드
 load_dotenv()
+
 API_URL = os.getenv('API_URL')
 if not API_URL:
     raise ValueError("API_URL 환경 변수가 설정되지 않았습니다.")

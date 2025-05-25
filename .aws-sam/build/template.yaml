@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: python3.9
+Resources:
+  ReservationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: wavepark-reservation
+      Description: "Wavepark \uC608\uC57D \uB370\uC774\uD130 \uD06C\uB864\uB7EC"
+      CodeUri: ReservationFunction
+      Handler: server.app.handler
+      Events:
+        ReservationApi:
+          Type: Api
+          Properties:
+            Path: /reservation/{date}
+            Method: GET
+    Metadata:
+      SamResourceId: ReservationFunction
+Outputs:
+  ApiUrl:
+    Description: GET /reservation/{date}
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/reservation/{date}
