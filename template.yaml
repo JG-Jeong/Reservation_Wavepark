@@ -5,8 +5,25 @@ Globals:
   Function:
     Timeout: 10
     Runtime: python3.9
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref WaterTemperatureTable
 
 Resources:
+  # 온도 데이터 저장
+  WaterTemperatureTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: WaterTemperature
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST # 요청당 과금 (첫 25GB 무료, $0.25/GB)
+
+  # 예약 데이터 크롤링
   ReservationFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -20,8 +37,34 @@ Resources:
           Properties:
             Path: /reservation/{date}
             Method: GET
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref WaterTemperatureTable
+            
+  # 수온 데이터 처리 함수
+  TemperatureFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: water-temperature
+      Description: 수온 데이터 처리
+      CodeUri: .
+      Handler: server.app.handler  # 동일한 FastAPI 앱 사용
+      Events:
+        PostTemperatureApi:
+          Type: Api
+          Properties:
+            Path: /temperature
+            Method: POST
+        GetTemperatureApi:
+          Type: Api
+          Properties:
+            Path: /temperature
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref WaterTemperatureTable
 
 Outputs:
   ApiUrl:
-    Description: "GET /reservation/{date}"
+    Description: "GET /reservation/{date}, POST/GET /temperature"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/reservation/{date}"

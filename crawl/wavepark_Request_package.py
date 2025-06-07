@@ -5,15 +5,15 @@ import os
 
 
 # Wavepark 서버 설정
-url = "https://www.wavepark.co.kr/generalbooking/ajaxSectionCheck"
-headers = {
+url_general = "https://www.wavepark.co.kr/generalbooking/ajaxSectionCheck"
+headers_general = {
     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
     "User-Agent": "Mozilla/5.0",
     "X-Requested-With": "XMLHttpRequest",
     "Cookie": "PHPSESSID=..."  # 여기에 실 쿠키 넣기
 }
 
-
+# 예약 데이터 파싱
 def parse_outHtml(html_text):
     soup = BeautifulSoup(html_text, "html.parser")
     inputs = soup.find_all("input", id=re.compile(r"^area\d{3}$"))
@@ -39,7 +39,6 @@ def parse_outHtml(html_text):
         })
     return results
 
-
 # 날짜별 반복
 def get_reservations_for_date(date_str: str):
     pickdate = date_str
@@ -58,7 +57,7 @@ def get_reservations_for_date(date_str: str):
 
     for payload in payloads:
         try:
-            res = requests.post(url, data=payload, headers=headers)
+            res = requests.post(url_general, data=payload, headers=headers_general)
             data = res.json()
             out_html = html.unescape(data.get("outHtml", ""))
             parsed = parse_outHtml(out_html)
