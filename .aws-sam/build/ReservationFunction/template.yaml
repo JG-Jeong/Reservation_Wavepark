@@ -3,25 +3,29 @@ Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 20
     Runtime: python3.9
+    MemorySize: 128
 
 Resources:
   ReservationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: wavepark-reservation
-      Description: Wavepark 예약 데이터 크롤러
-      CodeUri: . # ← 루트 전체를 묶어서 올립니다
-      Handler: server.app.handler # ← server/app.py 에서 `handler = Mangum(app)` 으로 export 한 이름
+      FunctionName: wavepark-reservation-v3
+      Description: Wavepark reservation data crawler
+      CodeUri: .
+      Handler: app.handler
       Events:
         ReservationApi:
           Type: Api
           Properties:
             Path: /reservation/{date}
             Method: GET
+      Environment:
+        Variables:
+          PHPSESSID: "<your-session-id>" # 실제 값으로 대체
 
 Outputs:
-  ApiUrl:
-    Description: "GET /reservation/{date}"
+  ReservationApiUrl:
+    Description: "API Gateway endpoint for reservation data"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/reservation/{date}"

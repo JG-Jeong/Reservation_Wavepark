@@ -1,8 +1,9 @@
 w1thermsensor
-requests
 beautifulsoup4
-fastapi
 uvicorn
-mangum
 pydantic
 datetime
+fastapi==0.111.0
+mangum==0.17.0
+boto3
+requests==2.31.0

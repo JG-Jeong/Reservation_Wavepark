@@ -57,8 +57,6 @@ def parse_general_outHtml(html_text):
 
 # `packagebooking/capaAllCheck` 패키지 세션 데이터 파싱
 def parse_capa_check(data, schidx_info):
-    # `grade`는 reserv_pannel에서 추출된 초급/중급/상급 정보
-    # 프론트엔드에서 파도 정보(예: 리프/베이)를 추가로 시각화/필터링 권장
     grade = schidx_info.get("grade", "알 수 없음")
     return [{
         "세션": grade,
@@ -70,6 +68,7 @@ def parse_capa_check(data, schidx_info):
 def get_schidx_for_night_session(date_str):
     # 패키지별 payload 설정 (초급/중급/상급별로 다를 수 있음)
     payloads = [
+        # 초급
         {
             "pickdate": date_str,
             "possaleid": "Z2506254518060MM9399",
@@ -77,12 +76,11 @@ def get_schidx_for_night_session(date_str):
             "cate2": "30",
             "cate1": "9",
             "sectype": "90",
-            "code": "241511957",
-            "price": "120000",
-            "thumb": "items%2F2025%2F2025-05-09%2FMTc0Njc3MDY5NQ-1746770695.jpg",
+
             "subject": "%5BNIGHT%5D+%EB%A6%AC%ED%94%84%EC%9E%90%EC%9C%A0%EC%84%9C%ED%95%91(%EC%A4%91%EA%B8%89)+2%EC%8B%9C%EA%B0%84+",
             "idx": "28855"
         },
+        # 중급
         {
             "pickdate": date_str,
             "possaleid": "Z2506254518060MM9399",
@@ -90,13 +88,21 @@ def get_schidx_for_night_session(date_str):
             "cate2": "30",
             "cate1": "9",
             "sectype": "90",
-            "code": "241511957",
-            "price": "120000",
-            "thumb": "items%2F2025%2F2025-05-09%2FMTc0Njc3MDY5NQ-1746770695.jpg",
             "subject": "%5BNIGHT%5D+%EB%A6%AC%ED%94%84%EC%9E%90%EC%9C%A0%EC%84%9C%ED%95%91(%EC%B4%88%EA%B8%89)+2%EC%8B%9C%EA%B0%84+",
             "idx": "25859"
+        },
+        #상급
+        {
+        "pickdate": date_str,
+        "possaleid": "K1008252211068P26152",
+        "cate3": "0",
+        "cate2": "30",
+        "cate1": "9",
+        "sectype": "90",
+        "subject": "%5BNIGHT%5D+%EB%A6%AC%ED%94%84%EC%9E%90%EC%9C%A0%EC%84%9C%ED%95%91(%EC%83%81%EA%B8%89)+2%EC%8B%9C%EA%B0%84+",
+        "idx": "28854"
         }
-        # 상급 패키지 추가 가능
+
     ]
 
     schidx_map = {}

@@ -2,26 +2,30 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 20
     Runtime: python3.9
+    MemorySize: 128
 Resources:
   ReservationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: wavepark-reservation
-      Description: "Wavepark \uC608\uC57D \uB370\uC774\uD130 \uD06C\uB864\uB7EC"
+      FunctionName: wavepark-reservation-v3
+      Description: Wavepark reservation data crawler
       CodeUri: ReservationFunction
-      Handler: server.app.handler
+      Handler: app.handler
       Events:
         ReservationApi:
           Type: Api
           Properties:
             Path: /reservation/{date}
             Method: GET
+      Environment:
+        Variables:
+          PHPSESSID: <your-session-id>
     Metadata:
       SamResourceId: ReservationFunction
 Outputs:
-  ApiUrl:
-    Description: GET /reservation/{date}
+  ReservationApiUrl:
+    Description: API Gateway endpoint for reservation data
     Value:
       Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/reservation/{date}
